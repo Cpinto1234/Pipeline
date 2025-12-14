@@ -117,17 +117,10 @@ jobs:
         if: steps.docker-secrets.outputs.status == 'proceed'
         shell: bash
         run: |
-          echo "Docker version:"
-          docker --version
-          echo "Contenido del repo:"
-          ls -l
-          echo "Contenido del backend:"
-          ls -l backend
-          echo "Building Docker image..."
-          docker buildx build \
-            --platform linux/amd64 \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest \
-            ./backend
+         docker buildx build --platform linux/amd64 \
+         -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest \
+         -f backend/Dockerfile \
+         backend
 
       - name: Enviar imagen a Docker Hub
         if: steps.docker-secrets.outputs.status == 'proceed'
