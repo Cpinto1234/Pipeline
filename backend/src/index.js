@@ -9,9 +9,12 @@ app.use(express.json());
 
 // Endpoint simple para probar el backend
 app.get("/api/saludo", (req, res) => {
-  res.json({ mensaje: "¡Pipeline CI/CD funcionando perfectamente! 🎉 Express + GitHub Actions + Docker" });
+  res.json({
+    mensaje: "Hola desde el backend muy bien con Express + CI/CD"
+  });
 });
 
 app.listen(PORT, () => {
   console.log(`Servidor backend escuchando en http://localhost:${PORT}`);
 });
+// trigger docker pipeline
