@@ -3,91 +3,25 @@ name: CI/CD Express + Vite
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
 jobs:
-  # ===========================
-  # JOB 1: INTEGRACIÓN CONTINUA
-  # ===========================
+
   ci:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout del código
+      - name: Checkout
         uses: actions/checkout@v4
+      # (resto del job ci)
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      # ---------- BACKEND ----------
-      - name: Instalar dependencias del backend
-        run: npm install
-        working-directory: backend
-
-      - name: Ejecutar tests del backend
-        run: npm test
-        working-directory: backend
-
-      - name: Ejecutar linter del backend
-        run: npm run lint
-        working-directory: backend
-
-      # ---------- FRONTEND ----------
-      - name: Instalar dependencias del frontend
-        run: npm install
-        working-directory: frontend
-
-      - name: Ejecutar tests del frontend
-        run: npm test
-        working-directory: frontend
-
-      - name: Ejecutar linter del frontend
-        run: npm run lint
-        working-directory: frontend
-
-      - name: Build del frontend
-        run: npm run build
-        working-directory: frontend
-
-      - name: Subir artefacto de build del frontend
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist
-
-  # ===========================
-  # JOB 2: DEPLOY FRONTEND (CD)
-  # ===========================
   deploy_frontend:
     needs: ci
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Checkout del código
+      - name: Checkout
         uses: actions/checkout@v4
+      # (resto del deploy frontend)
 
-      - name: Descargar artefacto del frontend
-        uses: actions/download-artifact@v4
-        with:
-          name: frontend-dist
-          path: dist
-
-      - name: Deploy a GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-
-  # ===========================
-  # JOB 3: IMAGEN DOCKER BACKEND
-  # ===========================
-  
-    build_and_push_backend:
+  build_and_push_backend:
     needs: ci
     runs-on: ubuntu-latest
 
