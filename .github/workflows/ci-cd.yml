@@ -89,48 +89,21 @@ jobs:
   build_and_push_backend:
     needs: ci
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
-
-      - name: Check si existen secretos de Docker Hub
-        id: docker-secrets
-        run: |
-          if [ -z "${{ secrets.DOCKERHUB_USERNAME }}" ] || [ -z "${{ secrets.DOCKERHUB_TOKEN }}" ]; then
-            echo "status=skipped" >> $GITHUB_OUTPUT
-            echo "⚠️  Secretos de Docker Hub no configurados. Saltando push a Docker Hub."
-          else
-            echo "status=proceed" >> $GITHUB_OUTPUT
-          fi
-        shell: bash
-
+        
       - name: Login en Docker Hub
-        if: steps.docker-secrets.outputs.status == 'proceed'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Construir imagen Docker del backend
-        if: steps.docker-secrets.outputs.status == 'proceed'
-        shell: bash
         run: |
-         echo "Docker version:"
-          docker --version
-         echo "Construyendo imagen Docker del backend..."
-         cd backend
-         docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest .
+          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest ./backend
 
       - name: Enviar imagen a Docker Hub
-        if: steps.docker-secrets.outputs.status == 'proceed'
         run: |
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest
-          echo "✅ Imagen subida a Docker Hub"
-
-      - name: Info si se saltó Docker Hub
-        if: steps.docker-secrets.outputs.status == 'skipped'
-        run: |
-          echo "⏭️  Job completado (sin push a Docker Hub)"
-          echo "Imagen construida localmente: backend-express-ci-cd:latest"
