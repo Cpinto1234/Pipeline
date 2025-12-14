@@ -5,7 +5,7 @@ function App() {
 
   useEffect(() => {
     // Ajusta la URL luego según dónde corra el backend
-    fetch("https://backend-express-ci-cd-y95v.onrender.com/api/saludo")
+    fetch("https://backend-express-ci-cd-y95v.onrender.com")
       .then((res) => res.json())
       .then((data) => setMensaje(data.mensaje))
       .catch(() =>
