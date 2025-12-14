@@ -86,24 +86,24 @@ jobs:
   # ===========================
   # JOB 3: IMAGEN DOCKER BACKEND
   # ===========================
-  build_and_push_backend:
+  
+    build_and_push_backend:
     needs: ci
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
-        
+
       - name: Login en Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Construir imagen Docker del backend
-        run: |
-          docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest ./backend
-
-      - name: Enviar imagen a Docker Hub
-        run: |
-          docker push ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest
+      - name: Build & Push imagen backend
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest
