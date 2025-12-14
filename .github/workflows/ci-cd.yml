@@ -116,8 +116,12 @@ jobs:
       - name: Construir imagen Docker del backend
         if: steps.docker-secrets.outputs.status == 'proceed'
         shell: bash
-        run: docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest -f backend/Dockerfile backend
-
+        run: |
+         echo "Docker version:"
+          docker --version
+         echo "Construyendo imagen Docker del backend..."
+         cd backend
+         docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest .
 
       - name: Enviar imagen a Docker Hub
         if: steps.docker-secrets.outputs.status == 'proceed'
