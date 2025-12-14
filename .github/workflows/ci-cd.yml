@@ -115,9 +115,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Construir imagen Docker del backend
-        run: |
-          docker build -t backend-express-ci-cd:latest ./backend
-          echo "✅ Imagen Docker construida correctamente"
+  run: |
+    docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/backend-express-ci-cd:latest ./backend
+    echo "✅ Imagen Docker construida correctamente"
+
 
       - name: Enviar imagen a Docker Hub
         if: steps.docker-secrets.outputs.status == 'proceed'
